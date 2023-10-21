@@ -1,18 +1,17 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import requests
 
 app = Flask(__name__)
 
 @app.route('/glmod/http=<path:url>', methods=['GET'])
 def intermediate(url):
-    # Monta a URL completa com base no parâmetro passado
     full_url = f'http://{url}'
-
-    # Faz uma solicitação para a URL com censura
-    response = requests.get(full_url)
-
-    # Retorna a resposta do servidor com censura
-    return response.content, response.status_code, response.headers.items()
+    try:
+        response = requests.get(full_url)
+        response_json = response.json()
+        return jsonify(response_json), response.status_code
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
