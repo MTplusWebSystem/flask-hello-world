@@ -3,13 +3,13 @@ import requests
 
 app = Flask(__name__)
 
-@app.route('/api/glmod', methods=['GET'])
-def intermediate():
-    # Obtém a URL com censura do parâmetro da solicitação
-    url = request.args.get('http')
+@app.route('/glmod/http=<path:url>', methods=['GET'])
+def intermediate(url):
+    # Monta a URL completa com base no parâmetro passado
+    full_url = f'http://{url}'
 
     # Faz uma solicitação para a URL com censura
-    response = requests.get(url)
+    response = requests.get(full_url)
 
     # Retorna a resposta do servidor com censura
     return response.content, response.status_code, response.headers.items()
